@@ -406,7 +406,11 @@ public class ValidateMediator extends AbstractListMediator implements FlowContin
                     for (Value schemaKey : schemaKeys) {
                         // Derive actual key from message context
                         String propName = schemaKey.evaluateValue(synCtx);
-                        sources[i++] = SynapseConfigUtils.getStreamSource(synCtx.getEntry(propName));
+                        Object schemaObject = synCtx.getEntry(propName);
+                        if (schemaObject == null) {
+                            throw new SynapseException("No Schema is available with the key  : " + propName);
+                        }
+                        sources[i++] = SynapseConfigUtils.getStreamSource(schemaObject);
                         // Generating a cached schema key
                         cachedSchemaKey.append(propName);
                     }
